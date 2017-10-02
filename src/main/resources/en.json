@@ -1,0 +1,16 @@
+{
+  "forms": {
+    "inventoryItem": {
+      "id": {
+        "placeholder": "Unique identifier",
+        "text": "id",
+        "tooltip": "Unique identifier"
+      },
+      "name": {
+        "placeholder": "The name of the inventory item",
+        "text": "name",
+        "tooltip": "The name of the inventory item"
+      }
+    }
+  }
+}

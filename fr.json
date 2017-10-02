@@ -1,0 +1,16 @@
+{
+  "forms" : {
+    "inventoryItem" : {
+      "id" : {
+        "placeholder" : "Identifiant unique",
+        "text" : "id",
+        "tooltip" : "Identifiant unique"
+      },
+      "name" : {
+        "placeholder" : "Le nom de l&#39;élément d&#39;inventaire",
+        "text" : "prénom",
+        "tooltip" : "Le nom de l&#39;élément d&#39;inventaire"
+      }
+    }
+  }
+}
