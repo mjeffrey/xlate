@@ -18,57 +18,35 @@ import static com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
 class JsonTranslator {
   private final JsonFactory factory = new JsonFactory();
 
-  private String sourceLang;
-  private String targetLang;
   private TranslatorService translatorService;
+  private LanguageGenerator languageGenerator;
+  private LanguageParser languageParser;
 
   @SneakyThrows
   public void translate() {
-    JsonParser parser = createJsonParser();
-    JsonGenerator generator = createJsonGenerator();
+    JsonParser parser = languageParser.getJsonParser();
+    JsonGenerator generator = languageGenerator.getJsonGenerator();
     while (parser.nextToken() != null) {
       JsonToken jsonToken = parser.currentToken();
       if (jsonToken.id() == ID_STRING) {
         String text = parser.getText();
-        text = translateText(sourceLang, targetLang, text);
+        text = translateText(languageParser.getSourcelanguage(), languageGenerator.getTargetLanguage(), text);
         generator.writeString(text);
       } else {
         generator.copyCurrentEvent(parser);
       }
     }
-    parser.close();
-    generator.close();
-
-  }
-
-  private JsonGenerator createJsonGenerator() throws IOException {
-    JsonGenerator generator = factory.createGenerator(new File(langToFilename(targetLang)), JsonEncoding.UTF8);
-    generator.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, true);
-    generator.useDefaultPrettyPrinter();
-    return generator;
-  }
-
-  private JsonParser createJsonParser() throws IOException {
-    InputStream stream = this.getClass().getResourceAsStream("/" + langToFilename(sourceLang));
-    if (stream == null) {
-      throw new NullPointerException();
-    }
-    JsonParser parser = factory.createParser(stream);
-    parser.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-    return parser;
-  }
-
-
-  private String langToFilename(String lang) {
-    return lang + ".json";
+    languageParser.close();
+    languageGenerator.close();
   }
 
   private String translateText(String sourceLang, String targetlang, String text) {
     if (StringUtils.isBlank(text)) {
       return "";
     }
-    log.info("called: " + text);
-    return translatorService.translateText(sourceLang, targetlang, text);
+    String translateText = translatorService.translateText(sourceLang, targetlang, text);
+    log.info("{} ===> {}", text, translateText);
+    return translateText;
   }
 
 }

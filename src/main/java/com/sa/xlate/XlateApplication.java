@@ -39,10 +39,33 @@ public class XlateApplication implements CommandLineRunner {
   public void translateJsonFile(String sourceLang, String targetLang) {
     JsonTranslator jsonTranslator = JsonTranslator.builder()
         .translatorService(translatorService)
-        .sourceLang(sourceLang)
-        .targetLang(targetLang)
+        .languageParser(createParser(sourceLang))
+        .languageGenerator(createGenerator(targetLang))
         .build();
     jsonTranslator.translate();
   }
+
+  private LanguageGenerator createGenerator(String targetLang) throws IOException {
+    JsonGenerator generator = factory.createGenerator(new File(langToFilename(targetLang)), JsonEncoding.UTF8);
+    generator.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, true);
+    generator.useDefaultPrettyPrinter();
+    return LanguageGenerator.builder().jsonGenerator(generator).targetLanguage(targetLang).build();
+  }
+
+  private LanguageParser createParser(String sourceLang) throws IOException {
+    InputStream stream = this.getClass().getResourceAsStream("/" + langToFilename(sourceLang));
+    if (stream == null) {
+      throw new NullPointerException();
+    }
+    JsonParser parser = factory.createParser(stream);
+    parser.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+    return LanguageParser.builder().jsonParser(parser).sourcelanguage(sourceLang).build();
+  }
+
+  private String langToFilename(String lang) {
+    return lang + ".json";
+  }
+
+
 
 }

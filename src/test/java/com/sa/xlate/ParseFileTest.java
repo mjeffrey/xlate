@@ -19,8 +19,8 @@ public class ParseFileTest {
     }
     JsonParser parser = factory.createParser(stream);
     JsonGenerator generator = factory.createGenerator(new File(langToFilename(to)), JsonEncoding.UTF8);
-    JsonTranslator jsonTranslator = JsonTranslator.builder().sourceLang(from).targetLang(to).build();
-    jsonTranslator.translate();
+//    JsonTranslator jsonTranslator = JsonTranslator.builder().sourceLang(from).targetLang(to).build();
+//    jsonTranslator.translate();
 
   }
 
