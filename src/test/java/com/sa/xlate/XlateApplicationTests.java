@@ -19,7 +19,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest(classes = XlateApplication.class)
 @ContextConfiguration(classes = XlateApplication.class,
     initializers = ConfigFileApplicationContextInitializer.class)
 public class XlateApplicationTests {
@@ -29,29 +28,11 @@ public class XlateApplicationTests {
   private XlateApplication xlateApplication;
 
   @MockBean
-  Translate translate;
-
-  @Mock
-  Translation translation;
-
-  public static class TestTranslate implements Translate {
-    @Delegate(excludes = MockedTranslate.class)
-    Translate translate = Mockito.mock(Translate.class);
-
-    private interface MockedTranslate {
-      Translation translate(String text, Translate.TranslateOption... options);
-    }
-
-    public Translation translate(String text, Translate.TranslateOption... options) {
-      Translation mock = Mockito.mock(Translation.class);
-      when(mock.getTranslatedText()).thenReturn("XX-" + text);
-      return mock;
-    }
-  }
+  private Translate translate;
 
   @Test
   public void translateToXX() {
-    when(translate.translate(anyString(), Matchers.anyVararg() )).thenAnswer(this::getMockAnswer);
+    when(translate.translate(anyString(), Matchers.anyVararg() )).thenAnswer(TranslateFixture::getMockAnswer);
     xlateApplication.translateJsonFile("en", TARGET_LANG);
   }
 

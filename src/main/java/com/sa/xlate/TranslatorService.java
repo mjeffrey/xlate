@@ -25,8 +25,12 @@ import java.io.PrintStream;
 @CacheConfig(cacheNames = "translation")
 public class TranslatorService {
 
-  @Autowired
   private Translate translate;
+
+  @Autowired
+  public TranslatorService(Translate translate) {
+    this.translate = translate;
+  }
 
   @Cacheable
   public String translateText(String sourceLang, String targetLang, String sourceText) {

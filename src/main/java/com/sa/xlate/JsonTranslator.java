@@ -9,7 +9,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import static com.fasterxml.jackson.core.JsonTokenId.ID_START_OBJECT;
 import static com.fasterxml.jackson.core.JsonTokenId.ID_STRING;
 
 @Slf4j
@@ -62,6 +69,10 @@ class JsonTranslator {
     generator.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, true);
     generator.useDefaultPrettyPrinter();
     return LanguageGenerator.builder().jsonGenerator(generator).targetLanguage(targetLang).build();
+  }
+
+  public static String langToFilename(String lang) {
+    return lang + ".json";
   }
 
 }

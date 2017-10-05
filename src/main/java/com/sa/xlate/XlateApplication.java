@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static com.sa.xlate.JsonTranslator.*;
+import static com.sa.xlate.JsonTranslator.createLanguageParser;
+import static com.sa.xlate.JsonTranslator.langToFilename;
+
 @SpringBootApplication
 @EnableCaching
 public class XlateApplication implements CommandLineRunner {
@@ -33,7 +37,7 @@ public class XlateApplication implements CommandLineRunner {
 
   @SneakyThrows
   public void translateJsonFile(String sourceLang, String targetLang) {
-    JsonTranslator jsonTranslator = JsonTranslator.builder()
+    JsonTranslator jsonTranslator = builder()
         .translatorService(translatorService)
         .languageParser(createParser(sourceLang))
         .languageGenerator(createGenerator(targetLang))
@@ -44,16 +48,13 @@ public class XlateApplication implements CommandLineRunner {
 
   private LanguageParser createParser(String sourceLang) throws IOException {
     InputStream stream = this.getClass().getResourceAsStream("/" + langToFilename(sourceLang));
-    return JsonTranslator.createLanguageParser(sourceLang, stream);
+    return createLanguageParser(sourceLang, stream);
   }
 
   private LanguageGenerator createGenerator(String targetLang) throws IOException {
     OutputStream outputStream = new FileOutputStream(langToFilename(targetLang));
-    return JsonTranslator.createLanguageGenerator(targetLang, outputStream);
+    return createLanguageGenerator(targetLang, outputStream);
   }
 
-  private String langToFilename(String lang) {
-    return lang + ".json";
-  }
 
 }
