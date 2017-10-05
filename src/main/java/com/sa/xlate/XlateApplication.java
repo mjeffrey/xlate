@@ -1,9 +1,6 @@
 package com.sa.xlate;
 
-import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,15 +8,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 @SpringBootApplication
 @EnableCaching
 public class XlateApplication implements CommandLineRunner {
-
-  private JsonFactory factory = new JsonFactory();
 
   @Autowired
   private TranslatorService translatorService;
@@ -45,27 +41,19 @@ public class XlateApplication implements CommandLineRunner {
     jsonTranslator.translate();
   }
 
-  private LanguageGenerator createGenerator(String targetLang) throws IOException {
-    JsonGenerator generator = factory.createGenerator(new File(langToFilename(targetLang)), JsonEncoding.UTF8);
-    generator.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, true);
-    generator.useDefaultPrettyPrinter();
-    return LanguageGenerator.builder().jsonGenerator(generator).targetLanguage(targetLang).build();
-  }
 
   private LanguageParser createParser(String sourceLang) throws IOException {
     InputStream stream = this.getClass().getResourceAsStream("/" + langToFilename(sourceLang));
-    if (stream == null) {
-      throw new NullPointerException();
-    }
-    JsonParser parser = factory.createParser(stream);
-    parser.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-    return LanguageParser.builder().jsonParser(parser).sourcelanguage(sourceLang).build();
+    return JsonTranslator.createLanguageParser(sourceLang, stream);
+  }
+
+  private LanguageGenerator createGenerator(String targetLang) throws IOException {
+    OutputStream outputStream = new FileOutputStream(langToFilename(targetLang));
+    return JsonTranslator.createLanguageGenerator(targetLang, outputStream);
   }
 
   private String langToFilename(String lang) {
     return lang + ".json";
   }
-
-
 
 }

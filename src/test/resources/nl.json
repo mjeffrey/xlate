@@ -1,0 +1,16 @@
+{
+  "forms" : {
+    "inventoryItem" : {
+      "id" : {
+        "placeholder" : "Unieke identificatiecode",
+        "text" : "ID kaart",
+        "tooltip" : "Unieke identificatiecode"
+      },
+      "name" : {
+        "placeholder" : "De naam van het inventarisitem",
+        "text" : "naam",
+        "tooltip" : "De naam van het inventarisitem"
+      }
+    }
+  }
+}
