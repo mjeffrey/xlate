@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 source ./api-keys.sh
 source ./default-paths.sh
 
